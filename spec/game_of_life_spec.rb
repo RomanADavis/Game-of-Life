@@ -1,1 +1,0 @@
-# spec/game_of_life_spec.rb
