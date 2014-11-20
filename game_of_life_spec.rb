@@ -16,6 +16,10 @@ describe "Game_of_Life" do
       expect(subject).to respond_to(:cols)
       expect(subject).to respond_to(:cell_grid)
       expect(subject).to respond_to(:neighbors)
+      expect(subject).to respond_to(:cells)
+      expect(subject).to respond_to(:randomly_populate)
+      expect(subject).to respond_to(:live_cells)
+      
     end
     
     it "should create cell grid on initialization" do
@@ -67,6 +71,14 @@ describe "Game_of_Life" do
       end
 
     end
+    
+    context "#randomly_populate" do
+      it "should blah" do
+        expect(subject.live_cells.empty?).to eq true
+        subject.randomly_populate
+        expect(subject.live_cells.empty?).to eq false
+      end
+    end
   end
   
   context "Cell" do
@@ -117,7 +129,7 @@ describe "Game_of_Life" do
   
   context "Rules" do
     let(:game) { Game.new }
-    context "rule_one" do
+    context "Rule 1" do
       it "cause any live cell with less than two live neighbors to die" do
         game = Game.new(world, [[1,0],[2,0]])
         game.tick!
@@ -125,7 +137,7 @@ describe "Game_of_Life" do
         expect(world.cell_grid[2][0].alive?).to eq false
       end
     end
-    context "rule_two" do
+    context "Rule 2" do
       it "any live cell with two live neighbors lives next turn" do
         game = Game.new(world, [[1,0],[1,1],[2,0]])
         game.tick!
@@ -142,7 +154,7 @@ describe "Game_of_Life" do
         expect(world.cell_grid[2][1].alive?).to eq true
       end
     end
-    context "rule_three" do
+    context "Rule 3" do
       it "kills a cell with more than three live neighbors" do
         game = Game.new(world, [[0,0],[1,0],[1,1],[2,0],[2,1]])
         game.tick!
@@ -150,7 +162,7 @@ describe "Game_of_Life" do
         expect(world.cell_grid[1][1].alive?).to eq false
       end
     end
-    context "rule_four" do
+    context "Rule 4s" do
       it "brings a dead cell to life it has exactly three live neighbors" do
         game = Game.new(world, [[0,0],[1,0],[1,1],[2,0],[2,1]])
         game.tick!
