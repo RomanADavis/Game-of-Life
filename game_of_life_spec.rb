@@ -15,6 +15,7 @@ describe "Game_of_Life" do
       expect(subject).to respond_to(:rows)
       expect(subject).to respond_to(:cols)
       expect(subject).to respond_to(:cell_grid)
+      expect(subject).to respond_to(:neighbors)
     end
     
     it "should create cell grid on initialization" do
@@ -24,7 +25,47 @@ describe "Game_of_Life" do
       subject.cell_grid.each do |row|
         row.each {|col| expect(col.is_a?(Cell)).to eq true}
       end
-      
+    end
+    
+    context "#cells" do
+      it "should add all cells in the grid" do
+        expect(subject.cells.length).to eq 9
+      end
+    end
+    context "#neighbors" do
+      it "should detect a neighbor to the north" do
+        subject.cell_grid[0][1].alive = true
+        expect(subject.neighbors(subject.cell_grid[1][1]).length).to eq 1
+      end
+      it "should detect a neighbor to the south" do
+        subject.cell_grid[2][1].alive = true
+        expect(subject.neighbors(subject.cell_grid[1][1]).length).to eq 1
+      end
+      it "should detect a neighbor to the east" do
+        subject.cell_grid[1][2].alive = true
+        expect(subject.neighbors(subject.cell_grid[1][1]).length).to eq 1
+      end
+      it "should detect a neighbor to the west" do
+        subject.cell_grid[1][0].alive = true
+        expect(subject.neighbors(subject.cell_grid[1][1]).length).to eq 1
+      end
+      it "should detect a neighbor to the northeast" do
+        subject.cell_grid[0][2].alive = true
+        expect(subject.neighbors(subject.cell_grid[1][1]).length).to eq 1
+      end
+      it "should detect a neighbor to the northwest" do
+        subject.cell_grid[0][0].alive = true
+        expect(subject.neighbors(subject.cell_grid[1][1]).length).to eq 1
+      end
+      it "should detect a neighbor to the southeast" do
+        subject.cell_grid[2][2].alive = true
+        expect(subject.neighbors(subject.cell_grid[1][1]).length).to eq 1
+      end
+      it "should detect a neighbor to the southwest" do
+        subject.cell_grid[2][0].alive = true
+        expect(subject.neighbors(subject.cell_grid[1][1]).length).to eq 1
+      end
+
     end
   end
   
@@ -76,8 +117,44 @@ describe "Game_of_Life" do
   
   context "Rules" do
     let(:game) { Game.new }
-    context "Rule_one" do
+    context "rule_one" do
       it "cause any live cell with less than two live neighbors to die" do
+        game = Game.new(world, [[1,0],[2,0]])
+        game.tick!
+        expect(world.cell_grid[1][0].alive?).to eq false
+        expect(world.cell_grid[2][0].alive?).to eq false
+      end
+    end
+    context "rule_two" do
+      it "any live cell with two live neighbors lives next turn" do
+        game = Game.new(world, [[1,0],[1,1],[2,0]])
+        game.tick!
+        expect(world.cell_grid[1][0].alive?).to eq true
+        expect(world.cell_grid[1][1].alive?).to eq true
+        expect(world.cell_grid[2][0].alive?).to eq true      
+      end
+      it "any live cell with three live neighbors lives next turn" do
+        game = Game.new(world, [[1,0],[1,1],[2,0],[2,1]])
+        game.tick!
+        expect(world.cell_grid[1][0].alive?).to eq true
+        expect(world.cell_grid[1][1].alive?).to eq true
+        expect(world.cell_grid[2][0].alive?).to eq true
+        expect(world.cell_grid[2][1].alive?).to eq true
+      end
+    end
+    context "rule_three" do
+      it "kills a cell with more than three live neighbors" do
+        game = Game.new(world, [[0,0],[1,0],[1,1],[2,0],[2,1]])
+        game.tick!
+        expect(world.cell_grid[1][0].alive?).to eq false
+        expect(world.cell_grid[1][1].alive?).to eq false
+      end
+    end
+    context "rule_four" do
+      it "brings a dead cell to life it has exactly three live neighbors" do
+        game = Game.new(world, [[0,0],[1,0],[1,1],[2,0],[2,1]])
+        game.tick!
+        expect(world.cell_grid[0][1].alive?).to eq true
       end
     end
   end
