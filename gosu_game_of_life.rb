@@ -38,10 +38,10 @@ class Game_Window < Gosu::Window
               
     @game.world.cells.each do |cell|
       if cell.alive?
-        draw_quad( cell.y * @row_height, cell.x * @col_width, @alive_color,
-                  cell.y * @row_height, (cell.x + 1) * @col_width, @alive_color,
-                  (cell.y + 1) * @row_height, (cell.x + 1) * @col_width, @alive_color,
-                  (cell.y + 1) * @row_height, cell.x * @col_width, @alive_color)
+        draw_quad( cell.y * @row_height + 1, cell.x * @col_width + 1, @alive_color,
+                  cell.y * @row_height + 1, (cell.x + 1) * @col_width - 1, @alive_color,
+                  (cell.y + 1) * @row_height - 1, (cell.x + 1) * @col_width - 1, @alive_color,
+                  (cell.y + 1) * @row_height - 1, cell.x * @col_width + 1, @alive_color)
       else
         draw_quad(cell.y * @row_height, cell.x * @col_width, @dead_color,
                   cell.y * @row_height, (cell.x + 1) * @col_width, @dead_color,
